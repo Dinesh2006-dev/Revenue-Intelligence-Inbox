@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>SpendNest Revenue Intelligence Inbox - 5 Presentation Slides</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+ <style>
+ :root {
+ --bg: #0d1117;
+ --surface: #161b22;
+ --surface2: #21262d;
+ --border: #30363d;
+ --text: #e6edf3;
+ --text-muted: #8b949e;
+ --accent: #58a6ff;
+ --green: #3fb950;
+ --amber: #d29922;
+ --red: #f85149;
+ }
+ * { box-sizing: border-box; margin: 0; padding: 0; }
+ body {
+ background: var(--bg);
+ color: var(--text);
+ font-family: 'Inter', system-ui, sans-serif;
+ overflow-x: hidden;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ padding: 24px;
+ }
+ .slide-deck {
+ max-width: 1100px;
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ gap: 32px;
+ }
+ .slide {
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: 12px;
+ padding: 36px 40px;
+ min-height: 580px;
+ display: flex;
+ flex-direction: column;
+ box-shadow: 0 8px 24px rgba(0,0,0,.4);
+ page-break-after: always;
+ }
+ .slide-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: flex-start;
+ border-bottom: 1px solid var(--border);
+ padding-bottom: 20px;
+ margin-bottom: 28px;
+ }
+ .slide-title { font-size: 24px; font-weight: 700; color: var(--text); }
+ .slide-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+ .slide-num {
+ background: var(--surface2);
+ border: 1px solid var(--border);
+ color: var(--accent);
+ padding: 4px 12px;
+ border-radius: 20px;
+ font-size: 12px;
+ font-weight: 700;
+ }
+ .slide-grid {
+ display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 20px;
+ flex: 1;
+ }
+ .slide-card {
+ background: var(--surface2);
+ border: 1px solid var(--border);
+ border-radius: 8px;
+ padding: 20px;
+ display: flex;
+ flex-direction: column;
+ }
+ .card-title {
+ font-size: 14px;
+ font-weight: 700;
+ margin-bottom: 12px;
+ }
+ .card-title.blue { color: var(--accent); }
+ .card-title.green { color: var(--green); }
+ .card-title.amber { color: var(--amber); }
+ .card-title.red { color: var(--red); }
+ ul { list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 12.5px; line-height: 1.5; color: var(--text); }
+ li { position: relative; padding-left: 14px; }
+ li::before { content: "•"; position: absolute; left: 0; color: var(--text-muted); font-weight: bold; }
+ .evidence-quote {
+ background: rgba(88, 166, 255, 0.08);
+ border-left: 3px solid var(--accent);
+ padding: 8px 12px;
+ border-radius: 0 6px 6px 0;
+ font-size: 11.5px;
+ font-style: italic;
+ color: var(--text-muted);
+ margin: 10px 0;
+ }
+ .controls {
+ display: flex;
+ gap: 12px;
+ margin-bottom: 20px;
+ }
+ .btn {
+ background: var(--surface2);
+ border: 1px solid var(--border);
+ color: var(--text);
+ padding: 8px 16px;
+ border-radius: 6px;
+ font-size: 13px;
+ font-weight: 600;
+ cursor: pointer;
+ }
+ .btn:hover { background: var(--border); color: var(--accent); }
+ @media print {
+ body { background: white; color: black; padding: 0; }
+ .slide { background: white; border: 1px solid #ccc; box-shadow: none; min-height: 90vh; }
+ .controls { display: none; }
+ .slide-card { background: #f8f9fa; border-color: #ddd; }
+ .card-title.blue { color: #0066cc; }
+ .card-title.green { color: #008800; }
+ .card-title.amber { color: #cc6600; }
+ .card-title.red { color: #cc0000; }
+ }
+ </style>
+</head>
+<body>
+
+<div class="controls">
+ <button class="btn" onclick="window.print()">Print / Save as PDF</button>
+ <a href="revenue_intelligence_inbox_slides.pptx" download class="btn" style="text-decoration:none;">Download PPTX Deck</a>
+ <a href="../app/index.html" class="btn" style="text-decoration:none;">SN Open Working Application</a>
+</div>
+
+<div class="slide-deck">
+
+ <!-- SLIDE 1 -->
+ <div class="slide" id="slide-1">
+ <div class="slide-header">
+ <div>
+ <h1 class="slide-title">Revenue Intelligence Inbox: Product Architecture & Challenge</h1>
+ <div class="slide-sub">SpendNest Sales Management Solution · Volopay Assessment</div>
+ </div>
+ <div class="slide-num">Slide 1 / 5</div>
+ </div>
+ <div class="slide-grid">
+ <div class="slide-card">
+ <div class="card-title blue">The Core Manager Challenge</div>
+ <ul>
+ <li>Sales managers are overwhelmed by multi-channel calls, calendar meetings, and disjointed CRM notes.</li>
+ <li><strong>Asynchronous arrival:</strong> Critical transcripts arrive late (e.g. M07 delivering 27 turns in revision 2).</li>
+ <li><strong>Deceptive metadata:</strong> Upstream labels like "voicemail" frequently mask substantive conversations.</li>
+ <li><strong>Multi-objective conversations:</strong> Single sessions blend sales, vendor evaluation, and customer retention.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title green">Product Mission & Architecture</div>
+ <ul>
+ <li><strong>Single Unified Workspace:</strong> Ingests 44 distinct interactions with zero duplicate inflation.</li>
+ <li><strong>Deterministic Rule Engine:</strong> Runs 100% locally with zero paid API dependencies or credentials.</li>
+ <li><strong>Transparent Evidence Anchoring:</strong> Every route and finding cites exact turn numbers or verbatim quotes.</li>
+ <li><strong>Contract Replay Compliance:</strong> Fully respects composite keys <code>(source_type, source_id)</code>, revision precedence, and manual route preservation.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title amber">Core Capabilities Delivered</div>
+ <ul>
+ <li><strong>Executive Dashboard:</strong> Real-time telemetry, transcript coverage (40.9%), and connected-call rate (36.7%).</li>
+ <li><strong>Split-View Inbox:</strong> Fast search, multi-factor filtering, formatted turns, and interactive overrides.</li>
+ <li><strong>Manager Daily Brief:</strong> Grounded 21 August 2026 executive synthesis across coaching and escalations.</li>
+ <li><strong>Audit & Export Hub:</strong> Machine-readable manifest (JSON/CSV) pointing to verified on-disk files.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <!-- SLIDE 2 -->
+ <div class="slide" id="slide-2">
+ <div class="slide-header">
+ <div>
+ <h1 class="slide-title">Data Contract Rigor, Baseline Telemetry & Metric Definitions</h1>
+ <div class="slide-sub">Ground Truth Analysis across 44 Applied Source Records</div>
+ </div>
+ <div class="slide-num">Slide 2 / 5</div>
+ </div>
+ <div class="slide-grid">
+ <div class="slide-card">
+ <div class="card-title blue">Dataset Structure & Scope</div>
+ <ul>
+ <li><strong>Total Ingested Records:</strong> Exactly 44 unique records (30 calls, 14 calendar meetings).</li>
+ <li><strong>Initial Delivery (Rev 1):</strong> 17 usable conversation texts (10 calls, 7 meetings).</li>
+ <li><strong>Update Delivery (Rev 2):</strong> M07 delivers 27 turns, expanding coverage to 18 (40.9%).</li>
+ <li><strong>Unprocessed Records:</strong> 26 records (20 background calls, 6 silent/cancelled meetings) retained as metadata without hallucinated analysis.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title green">Authoritative Metric Definitions</div>
+ <ul>
+ <li><strong>Transcript Coverage:</strong> 18 / 44 = 40.9% (Usable texts divided by total applied records).</li>
+ <li><strong>Source-Reported Connected Rate:</strong> 11 / 30 = 36.7% (Calls where <code>is_connected=true</code> divided by 30 non-null calls, 0 unknown).</li>
+ <li><strong>Separation of Concepts:</strong> Stored upstream connection classification is explicitly isolated from transcript-derived findings.</li>
+ <li><strong>Null Preservation:</strong> Null strictly means value absent; never coerced into false, zero, or empty.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title amber">Deduplication Contract</div>
+ <ul>
+ <li><strong>Logical Identity:</strong> Strictly the composite key <code>(source_type, source_id)</code>.</li>
+ <li><strong>Anti-Pattern Defense:</strong> Never deduplicate on title, company name, phone token, or array index.</li>
+ <li><strong>Revision Precedence:</strong> Higher revision replaces full payload; older revision is ignored.</li>
+ <li><strong>Override Invariance:</strong> Manual routing decisions are preserved across subsequent re-imports and restarts.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <!-- SLIDE 3 -->
+ <div class="slide" id="slide-3">
+ <div class="slide-header">
+ <div>
+ <h1 class="slide-title">Core Conversational Discoveries & Verifiable Citations</h1>
+ <div class="slide-sub">Grounded Source Evidence Directly Influencing Interface and Routing Rules</div>
+ </div>
+ <div class="slide-num">Slide 3 / 5</div>
+ </div>
+ <div class="slide-grid">
+ <div class="slide-card">
+ <div class="card-title green">Finding 1: LedgerBridge (M02) is a Vendor Evaluation, Not a Sales Pitch</div>
+ <div class="evidence-quote">
+ "Then I will cover the market strategy as well as the technical integration... The basic setup begins at EUR 2,600; a more supported implementation starts at EUR 6,500..." (Turn 2 & 31)
+ </div>
+ <ul>
+ <li><strong>Context:</strong> SpendNest strategy team evaluating an e-invoicing middleware partner.</li>
+ <li><strong>Product Impact:</strong> Precluded false pipeline inflation. Routed to <code>vendor_supplier</code> rather than Sales Opportunity, preserving quota integrity.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title red">Finding 2: Willowfield Trust (M07) Revealed 4 Severe Software Defects</div>
+ <div class="evidence-quote">
+ "When I use Mark as paid, the first payment shows INR 18,200... The amount from the previous item appears in the next one." (Turns 3, 8, 19, 21)
+ </div>
+ <ul>
+ <li><strong>Context:</strong> Customer screen-share demonstrated 4 severe bugs (edit description fail, document upload fail, stuck reimbursements, stale state bleeding).</li>
+ <li><strong>Product Impact:</strong> Triggered immediate Customer Escalation alert, stale analysis flag, and engineering ticket action in Daily Brief.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title blue">Finding 3: Internal Ops Training (M10) Identified via Speaker Topology</div>
+ <div class="evidence-quote">
+ "Team member B: I have access to a demo account... but not back-office super-admin access. Team member A: Operations uses it to create accounts..." (Turns 4 & 5)
+ </div>
+ <ul>
+ <li><strong>Context:</strong> Billing engine recovery walkthrough between internal staff.</li>
+ <li><strong>Product Impact:</strong> Speaker topology checks classified M10 as <code>internal</code>, keeping sales pipeline and customer coaching uncluttered.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <!-- SLIDE 4 -->
+ <div class="slide" id="slide-4">
+ <div class="slide-header">
+ <div>
+ <h1 class="slide-title">Difficult Routing Case & Deliberately Rejected Decision</h1>
+ <div class="slide-sub">Architectural Trade-offs, Edge-Case Governance, and Honest Uncertainty</div>
+ </div>
+ <div class="slide-num">Slide 4 / 5</div>
+ </div>
+ <div class="slide-grid">
+ <div class="slide-card">
+ <div class="card-title amber">Difficult Case: M04 (Cedarwave Distribution)</div>
+ <ul>
+ <li><strong>Tension:</strong> Existing customer experiencing in-store prepaid card declines.</li>
+ <li><strong>Conflicting Intents:</strong> Customer demands credit card integration for their INR 1.3 crore bank facility; rep pitches prepaid migration.</li>
+ <li><strong>Hierarchy Friction:</strong> Customer also reports confused department structure in admin view.</li>
+ <li><strong>Resolution:</strong> Avoided naive 'Sales Opportunity' route. Classified as <code>customer_concern</code> / Retention Risk with action item on bank card statement feed.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title red">Deliberately Rejected: Synthetic Pipeline Valuation</div>
+ <ul>
+ <li><strong>Alternative Considered:</strong> Extracting spoken currency numbers into an aggregate CRM pipeline total.</li>
+ <li><strong>Why Rejected:</strong> Numbers mentioned represent customer operational costs (M03 INR 10-13L travel pool, M04 INR 1.3 crore credit limit, M06 INR 1.3L invoice)—NOT SpendNest contract values!</li>
+ <li><strong>Unacceptable Risk:</strong> Summing these numbers manufactures a deceptive multi-crore pipeline metric.</li>
+ <li><strong>Accepted Trade-off:</strong> Surfaced qualitative deal signals and confirmed next steps without fabricated financial totals.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title blue">Rule-Based Determinism vs Live LLM Calls</div>
+ <ul>
+ <li><strong>Zero Cloud Cost:</strong> Runs entirely client-side without API keys, token limits, or network latency.</li>
+ <li><strong>Auditable Reasoning:</strong> Every routing suggestion is backed by transparent deterministic checks.</li>
+ <li><strong>Offline Governance:</strong> Sensitive conversation text never leaves the client browser.</li>
+ <li><strong>Human-in-the-Loop Override:</strong> Managers retain 100% control to adjust routes with immutable audit logs.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+ <!-- SLIDE 5 -->
+ <div class="slide" id="slide-5">
+ <div class="slide-header">
+ <div>
+ <h1 class="slide-title">Automated Replay Verification, Known Limitations & Roadmap</h1>
+ <div class="slide-sub">100% Contract Test Suite Execution and Future Evolution</div>
+ </div>
+ <div class="slide-num">Slide 5 / 5</div>
+ </div>
+ <div class="slide-grid">
+ <div class="slide-card">
+ <div class="card-title green">Automated Contract Suite (6/6 Pass)</div>
+ <ul>
+ <li><strong>Step 1 (Initial Import):</strong> 44 unique records, 17 usable texts, 0 duplicates.</li>
+ <li><strong>Step 2 (Shuffled Re-import):</strong> Idempotency proven; record count remained 44.</li>
+ <li><strong>Step 3 (Manual Override):</strong> Changed M07 to <code>customer_escalation</code> with audit note.</li>
+ <li><strong>Step 4 (Rev 2 Update):</strong> Ingested M07 update (27 turns); manual route strictly preserved.</li>
+ <li><strong>Step 5 (Older Rev 1 Re-import):</strong> Revision precedence proven; Rev 1 did not overwrite Rev 2.</li>
+ <li><strong>Step 6 (Browser Reload):</strong> State and overrides fully restored from LocalStorage.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title amber">Known Limitations & Boundaries</div>
+ <ul>
+ <li><strong>Single-Date Scope:</strong> All interactions fall on 21 August 2026; longitudinal trendlines across weeks cannot be derived.</li>
+ <li><strong>Background Call Visibility:</strong> 20 calls lack transcripts due to delivery redaction; classified strictly on metadata.</li>
+ <li><strong>No Authoritative Staff Directory:</strong> Rep roles are inferred from call direction and meeting titles.</li>
+ <li><strong>No Live CRM Opportunity Join:</strong> Conversation signals are presented without unverified CRM deal IDs.</li>
+ </ul>
+ </div>
+ <div class="slide-card">
+ <div class="card-title blue">Future Roadmap & Enhancements</div>
+ <ul>
+ <li><strong>Bi-Directional CRM Sync:</strong> Webhook connector to push manual overrides back to Salesforce/HubSpot.</li>
+ <li><strong>Local Small-Language Model:</strong> Optional on-device WebGPU model (e.g. Gemma 2B) for zero-latency semantic search.</li>
+ <li><strong>Audio Waveform Viewer:</strong> Integration with audio player if un-redacted media is provided in future batches.</li>
+ <li><strong>Engineering Webhook:</strong> Push verified customer bug passages directly to Jira/Linear.</li>
+ </ul>
+ </div>
+ </div>
+ </div>
+
+</div>
+
+</body>
+</html>

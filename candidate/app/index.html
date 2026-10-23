@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>SpendNest Revenue Intelligence Inbox | Volopay</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="style.css">
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="shell">
+ <!-- ── APP HEADER ──────────────────────────────────────────────────────── -->
+ <header id="app-header">
+ <div class="brand">
+ <div class="brand-icon">SN</div>
+ <span>SpendNest</span>
+ <span style="font-weight:400; color:var(--text-muted); font-size:12px; margin-left:4px;">Revenue Intelligence Inbox</span>
+ </div>
+
+ <div class="flex items-center gap-2" style="margin-left: 20px;">
+ <span id="header-record-count" class="badge" style="background:var(--surface3); color:var(--text);">44 Records</span>
+ <span id="header-batch-badge" class="badge" style="background:#0d2137; color:var(--accent); border:1px solid #1b4070;">Batch: update-002 (Rev 2)</span>
+ <span class="badge" style="background:var(--surface2); color:var(--text-muted); font-size:10px;">Date: 21 Aug 2026 (Asia/Kolkata)</span>
+ </div>
+
+ <div class="header-spacer"></div>
+
+ <div class="header-actions">
+ <button id="theme-toggle-btn" class="btn btn-secondary btn-sm" title="Toggle between Black Mode and White Mode">
+ White Mode
+ </button>
+ <button class="btn btn-secondary btn-sm" onclick="window.location.hash='#replay'; document.querySelector('.nav-item[data-page=\'replay\']').click();">
+ Replay Lab
+ </button>
+ <button class="btn btn-primary btn-sm" onclick="document.querySelector('.nav-item[data-page=\'brief\']').click();">
+ Daily Brief
+ </button>
+ <button id="btn-reset-state" class="btn btn-ghost btn-sm" title="Reset state to initial clean baseline">
+ Reset
+ </button>
+ </div>
+ </header>
+
+ <!-- ── SIDEBAR NAVIGATION ──────────────────────────────────────────────── -->
+ <aside id="sidebar">
+ <div class="nav-section-label">Workspace</div>
+ <button class="nav-item active" data-page="overview">
+ <span class="icon"></span>
+ <span>Overview Dashboard</span>
+ </button>
+ <button class="nav-item" data-page="inbox">
+ <span class="icon"></span>
+ <span>Conversation Inbox</span>
+ <span class="nav-badge" id="nav-inbox-badge">44</span>
+ </button>
+ <button class="nav-item" data-page="brief">
+ <span class="icon"></span>
+ <span>Daily Brief (21 Aug)</span>
+ </button>
+
+ <div class="nav-section-label" style="margin-top:16px;">Quality & Ops</div>
+ <button class="nav-item" data-page="replay">
+ <span class="icon"></span>
+ <span>Replay & Audit Lab</span>
+ </button>
+ <button class="nav-item" data-page="export">
+ <span class="icon"></span>
+ <span>Export & Manifest</span>
+ </button>
+
+ <div style="margin-top:auto; padding:12px; font-size:11px; color:var(--text-subtle); border-top:1px solid var(--border-subtle);">
+ <div>SpendNest Revenue Inbox</div>
+ <div style="margin-top:2px;">Supabase Cloud Backend</div>
+ <div style="margin-top:2px; color:var(--green);"> Live Cloud DB Active</div>
+ </div>
+ </aside>
+
+ <!-- ── MAIN CONTENT AREA ───────────────────────────────────────────────── -->
+ <main id="main-area">
+
+ <!-- ════ PAGE 1: OVERVIEW DASHBOARD ════ -->
+ <div id="page-overview" class="page active">
+ <div class="page-header">
+ <div>
+ <h1 class="page-title">Executive Sales Overview</h1>
+ <div class="page-subtitle">Real-time interaction telemetry, transcript coverage, and routing distribution for 21 August 2026</div>
+ </div>
+ <div class="flex gap-2">
+ <button class="btn btn-secondary btn-sm" onclick="document.querySelector('.nav-item[data-page=\'inbox\']').click();">
+ Open Full Inbox →
+ </button>
+ </div>
+ </div>
+
+ <!-- Headline Metrics Grid -->
+ <div class="metrics-grid">
+ <div class="metric-card accent">
+ <div class="metric-label">Total Unique Records</div>
+ <div class="metric-value" id="metric-total">44</div>
+ <div class="metric-sub" id="metric-total-sub">30 calls · 14 meetings</div>
+ </div>
+
+ <div class="metric-card green">
+ <div class="metric-label">Transcript Coverage</div>
+ <div class="metric-value" id="metric-coverage">40.9%</div>
+ <div class="metric-sub" id="metric-coverage-sub">18 of 44 records with text</div>
+ </div>
+
+ <div class="metric-card amber">
+ <div class="metric-label">Connected-Call Rate (Source)</div>
+ <div class="metric-value" id="metric-connect">36.7%</div>
+ <div class="metric-sub" id="metric-connect-sub">11 of 30 reported calls (0 unk)</div>
+ </div>
+
+ <div class="metric-card red">
+ <div class="metric-label">Requires Attention</div>
+ <div class="metric-value" id="metric-review">0</div>
+ <div class="metric-sub" id="metric-review-sub">Review or stale items</div>
+ </div>
+ </div>
+
+ <!-- Analytical Notice Card -->
+ <div class="card card-sm" style="background:#0d2137; border-color:#1b4070; margin-bottom:20px;">
+ <div class="flex items-center gap-2" style="font-size:12px; color:#58a6ff;">
+ <span>Notice:</span>
+ <strong>Data Integrity Notice:</strong>
+ <span style="color:var(--text);">
+ All metrics are computed strictly from currently applied source records.
+ The connected-call rate is a source-reported classification (11 connected / 30 non-null calls, 0 unknown).
+ Usable transcript coverage reflects the 18 verified conversation texts (10 calls + 8 meetings).
+ </span>
+ </div>
+ </div>
+
+ <!-- Charts Row -->
+ <div class="chart-grid">
+ <div class="chart-card">
+ <div class="chart-title">Assigned Route Distribution</div>
+ <div class="chart-wrap">
+ <canvas id="route-chart-canvas"></canvas>
+ </div>
+ </div>
+
+ <div class="chart-card">
+ <div class="chart-title">Activity by Rep & Organizer</div>
+ <div class="chart-wrap">
+ <canvas id="rep-chart-canvas"></canvas>
+ </div>
+ </div>
+ </div>
+
+ <!-- Key Findings Highlights -->
+ <div class="section-title">Critical Conversational Evidence Highlights</div>
+ <div class="grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:12px; margin-bottom:24px;">
+ <div class="card card-sm">
+ <div class="flex items-center justify-between">
+ <span class="badge badge-meeting">MEETING M07</span>
+ <span class="route-badge route-customer_escalation">Customer Escalation</span>
+ </div>
+ <div class="record-title" style="margin-top:8px;">Willowfield Trust / SpendNest</div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Late transcript delivery revealed 4 severe customer-facing UI bugs: description saving failure, recreate payment upload bug, stuck reimbursements, and state bleeding on 'Mark as paid'.
+ </p>
+ <div class="evidence-ref" style="margin-top:8px;">
+ "When I use Mark as paid, the first payment shows INR 18,200... The amount from the previous item appears in the next one." (Turn 21)
+ </div>
+ </div>
+
+ <div class="card card-sm">
+ <div class="flex items-center justify-between">
+ <span class="badge badge-meeting">MEETING M02</span>
+ <span class="route-badge route-vendor_supplier">Vendor / Supplier</span>
+ </div>
+ <div class="record-title" style="margin-top:8px;">LedgerBridge / SpendNest</div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Crucial taxonomy distinction: SpendNest is evaluating LedgerBridge as an infrastructure provider for e-invoicing compliance. Not a customer sales pitch!
+ </p>
+ <div class="evidence-ref" style="margin-top:8px;">
+ "The basic setup begins at EUR 2,600; a more supported implementation starts at EUR 6,500..." (Turn 31)
+ </div>
+ </div>
+
+ <div class="card card-sm">
+ <div class="flex items-center justify-between">
+ <span class="badge badge-meeting">MEETING M01</span>
+ <span class="route-badge route-sales_opportunity">Sales Opportunity</span>
+ </div>
+ <div class="record-title" style="margin-top:8px;">Harborpath Advisory / SpendNest</div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ High-leverage channel partner onboarding for remote US business bank accounts. Partner agreed to review MOU and shared tracking sheet.
+ </p>
+ <div class="evidence-ref" style="margin-top:8px;">
+ "No, let us get the partner onboarding started." (Turn 12)
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ════ PAGE 2: CONVERSATION INBOX (SPLIT VIEW) ════ -->
+ <div id="page-inbox" class="page" style="padding:0;">
+ <div class="split-view">
+ <!-- Split Left: Searchable Filterable Table -->
+ <div class="split-left">
+ <div class="page-header" style="margin-bottom:12px;">
+ <div>
+ <h2 class="page-title">Conversation Inbox</h2>
+ <div class="page-subtitle" id="inbox-count-display">Showing 44 records</div>
+ </div>
+ </div>
+
+ <!-- Controls Bar -->
+ <div class="inbox-controls">
+ <input type="text" id="search-input" class="search-box" placeholder="Search by title, rep, quote, ID, or keywords..." />
+ 
+ <select id="filter-type" class="filter-select">
+ <option value="all">All Source Types</option>
+ <option value="call">Calls Only (30)</option>
+ <option value="meeting">Meetings Only (14)</option>
+ </select>
+
+ <select id="filter-route" class="filter-select">
+ <option value="all">All Routes</option>
+ <option value="sales_opportunity">Sales Opportunity</option>
+ <option value="follow_up_required">Follow-up Required</option>
+ <option value="customer_concern">Customer Concern</option>
+ <option value="customer_escalation">Customer Escalation</option>
+ <option value="internal">Internal Training / Ops</option>
+ <option value="vendor_supplier">Vendor / Supplier</option>
+ <option value="no_action">No Action / Closed</option>
+ <option value="needs_review">Needs Review</option>
+ </select>
+
+ <select id="filter-transcript" class="filter-select">
+ <option value="all">Transcript: All</option>
+ <option value="yes">With Transcript Text</option>
+ <option value="no">No Text Supplied</option>
+ </select>
+
+ <select id="filter-review" class="filter-select">
+ <option value="all">Review: All</option>
+ <option value="reviewed">Reviewed</option>
+ <option value="pending">Pending</option>
+ <option value="overridden">Manually Overridden</option>
+ <option value="stale">Stale After Update</option>
+ </select>
+
+ <select id="filter-rep" class="filter-select">
+ <option value="all">All Reps & Organizers</option>
+ </select>
+
+ <select id="sort-select" class="filter-select">
+ <option value="date:desc">Sort: Date (Newest)</option>
+ <option value="date:asc">Sort: Date (Oldest)</option>
+ <option value="ref:asc">Sort: Record Ref (A-Z)</option>
+ <option value="route:asc">Sort: Route Category</option>
+ </select>
+ </div>
+
+ <!-- Inbox Table -->
+ <table class="inbox-table">
+ <thead>
+ <tr>
+ <th style="width:70px;">Type / Ref</th>
+ <th>Conversation / Context</th>
+ <th style="width:110px;">Timestamp</th>
+ <th style="width:90px;">Text</th>
+ <th style="width:140px;">Active Route</th>
+ <th style="width:60px; text-align:center;">Rev</th>
+ <th style="width:80px;">Status</th>
+ </tr>
+ </thead>
+ <tbody id="inbox-tbody">
+ <!-- Dynamically populated rows -->
+ </tbody>
+ </table>
+ </div>
+
+ <!-- Split Right: Detail Inspector -->
+ <div class="split-right" id="detail-panel">
+ <!-- Dynamically populated details -->
+ </div>
+ </div>
+ </div>
+
+ <!-- ════ PAGE 3: MANAGER DAILY BRIEF (21 AUG 2026) ════ -->
+ <div id="page-brief" class="page">
+ <div class="page-header">
+ <div>
+ <h1 class="page-title">Sales Manager Daily Brief</h1>
+ <div class="page-subtitle">Date: 21 August 2026 · Timezone: Asia/Kolkata · Synthesized across 44 Interactions</div>
+ </div>
+ <button class="btn btn-secondary btn-sm" onclick="window.print()">Print / Save PDF</button>
+ </div>
+
+ <!-- Executive Overview -->
+ <div class="brief-section">
+ <h3><span></span> Executive Summary</h3>
+ <p>
+ On Friday, 21 August 2026, SpendNest recorded <strong>44 distinct interactions</strong> comprising 30 calls and 14 scheduled meetings.
+ Detailed conversation transcripts were captured for 18 records (10 calls and 8 meetings, including late delivery M07).
+ The team achieved an overall <strong>36.7% source-reported connected-call rate</strong> (11 connected out of 30 non-null calls, with 0 unknown).
+ </p>
+ <p>
+ Today's activity surfaces two critical commercial themes: <strong>high-potential partner distribution channels</strong> (Harborpath Advisory, Willowbank Advisory)
+ contrasted with <strong>urgent customer friction and defect escalations</strong> that require executive coordination across Product and Engineering before Monday morning.
+ </p>
+ </div>
+
+ <!-- High Priority Escalations -->
+ <div class="brief-section" style="border-left:4px solid var(--red);">
+ <h3 style="color:var(--red);"><span>Critical:</span> Urgent Customer Escalations & Product Defects</h3>
+ 
+ <div class="brief-item">
+ <div class="flex items-center justify-between">
+ <span class="record-link" onclick="document.querySelector('.nav-item[data-page=\'inbox\']').click();">M07: Willowfield Trust — 4 Severe UI Defects</span>
+ <span class="badge badge-stale">CRITICAL ESCALATION</span>
+ </div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Customer demonstrated 4 reproducible bugs on screen share:
+ (1) Description edit field fails to persist on save;
+ (2) File attachment fails completely on the Recreate Payment screen (workaround: invoice review screen);
+ (3) Reimbursement payments released but indefinitely stuck in 'Processing';
+ (4) Stale state bug on 'Mark as paid' modal where INR 18,200 carries forward into subsequent line items.
+ </p>
+ <div class="evidence-ref">
+ <strong>Action:</strong> Engineering ticket required immediately. Status confirmation promised to Customer A within 1–2 hours regarding stuck payments.
+ </div>
+ </div>
+
+ <div class="brief-item">
+ <div class="flex items-center justify-between">
+ <span class="record-link">M04: Cedarwave Distribution — Migration & Acceptance Friction</span>
+ <span class="badge badge-no-transcript">CHURN RISK</span>
+ </div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Customer experiencing physical-card acceptance failures with current prepaid program. Strongly desires credit card functionality for their INR 1.3 crore bank credit facility.
+ </p>
+ <div class="evidence-ref">
+ <strong>Action:</strong> Confirm whether customer's bank credit cards can be integrated into SpendNest's statement feed; schedule admin session to untangle confused department hierarchy.
+ </div>
+ </div>
+
+ <div class="brief-item">
+ <div class="flex items-center justify-between">
+ <span class="record-link">M09: Brookmint Holdings — Invitation Token Expiration</span>
+ <span class="badge" style="color:var(--amber); background:var(--amber-dim);">ONBOARDING BLOCKER</span>
+ </div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Customer unable to complete multi-tenant onboarding for Brookmint Holdings because newly sent invitation tokens immediately report as expired.
+ </p>
+ <div class="evidence-ref">
+ <strong>Action:</strong> Check authentication service token expiry logic; provide written guidance on shared administrator mailbox security.
+ </div>
+ </div>
+ </div>
+
+ <!-- High Value Sales & Partner Opportunities -->
+ <div class="brief-section" style="border-left:4px solid var(--green);">
+ <h3 style="color:var(--green);"><span>Opportunity:</span> Top Sales & Partner Pipeline Opportunities</h3>
+ 
+ <div class="brief-item">
+ <div class="flex items-center justify-between">
+ <span class="record-link">M01: Harborpath Advisory — High-Leverage Referral MOU</span>
+ <span class="badge badge-transcript">MOU SIGNATURE READY</span>
+ </div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Partner A agreed to refer incorporation clients for remote US business bank accounts. Commercial terms agreed: $260 account approval bonus, interchange share, tier bonus ($195–$390) for card spend, and 5th referral bonus.
+ </p>
+ <div class="evidence-ref">
+ <strong>Action:</strong> Team member A to send MOU for signature, unique referral link, and shared onboarding tracking sheet.
+ </div>
+ </div>
+
+ <div class="brief-item">
+ <div class="flex items-center justify-between">
+ <span class="record-link">M03: Asterloom Systems — 65 Employee Card Rollout</span>
+ <span class="badge badge-transcript">CFO PROPOSAL PENDING</span>
+ </div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ Domestic card rollout for INR 10–13 lakh monthly spend. Customer B requested clear itemized proposal separating INR 26,000 subscription from INR 13,000 one-time setup charge before CFO review.
+ </p>
+ <div class="evidence-ref">
+ <strong>Action:</strong> Send clean itemized pricing proposal; offer executive CFO walkthrough.
+ </div>
+ </div>
+
+ <div class="brief-item">
+ <div class="flex items-center justify-between">
+ <span class="record-link">C03 & C07: Developer API & Willowbank Advisory</span>
+ <span class="badge badge-call">SCHEDULED MONDAY CALLBACKS</span>
+ </div>
+ <p class="text-xs text-muted" style="margin-top:4px;">
+ C03: Milan requested email with subject "Developer access and event notifications — follow-up" and call Monday morning.
+ C07: Dev secured agreement with Aditya at Willowbank Advisory for partnership proposal on messaging app and Monday call.
+ </p>
+ </div>
+ </div>
+
+ <!-- Sales Coaching & Rep Observations -->
+ <div class="brief-section">
+ <h3><span>Coaching:</span> Representative Coaching & Operational Feedback</h3>
+ 
+ <div class="brief-item">
+ <strong>Arun (15 Calls, 1 Meeting):</strong>
+ <p class="text-xs text-muted" style="margin-top:2px;">
+ Demonstrates high outbound volume and polite composure during difficult cold outreach.
+ <em>Coaching Point:</em> In C01, prospect objected strongly to unsolicited calls on a private work number. Ensure contact list sourcing adheres to opt-in criteria. In C04, ensure voicemails leave clear direct callbacks.
+ </p>
+ </div>
+
+ <div class="brief-item">
+ <strong>Meera (5 Calls):</strong>
+ <p class="text-xs text-muted" style="margin-top:2px;">
+ Exceptional consultative qualifying. Successfully turned cold outreach into valuable referrals: C08 (Raghav referred people ops at contact08@example.com) and C09 (Vedant referred Business Head Mr. Rishabh).
+ <em>Coaching Point:</em> In C05, competitor StoreHarbor was mentioned; develop a quick 3-bullet competitive battlecard contrasting SpendNest's card-level controls against StoreHarbor.
+ </p>
+ </div>
+
+ <div class="brief-item">
+ <strong>Kiran & Dev (Outbound Calls):</strong>
+ <p class="text-xs text-muted" style="margin-top:2px;">
+ Kiran handled poor audio gracefully in C03, securing an exact email subject agreement and Monday call. Dev effectively pitched the partnership angle in C07 to Willowbank Advisory. Both have clear Monday morning pipeline targets.
+ </p>
+ </div>
+ </div>
+ </div>
+
+ <!-- ════ PAGE 4: REPLAY & AUDIT LAB ════ -->
+ <div id="page-replay" class="page">
+ <div class="page-header">
+ <div>
+ <h1 class="page-title">Data Replay & Audit Lab</h1>
+ <div class="page-subtitle">Interactive verification suite for idempotent imports, deduplication, revision ordering, and override preservation</div>
+ </div>
+ <button id="btn-run-full-replay" class="btn btn-primary btn-sm">
+ Run Full Replay Automation (6/6 Steps)
+ </button>
+ </div>
+
+ <!-- Replay Guide Card -->
+ <div class="card card-sm" style="margin-bottom:16px;">
+ <div class="text-xs text-muted" style="margin-bottom:8px;">
+ <strong>Data Replay Testbed:</strong> Execute the sequence below step-by-step or automatically to verify pipeline rules:
+ </div>
+ <div class="flex gap-2" style="flex-wrap:wrap;">
+ <button id="btn-step1-initial" class="btn btn-secondary btn-sm">1. Import Initial (Rev 1)</button>
+ <button id="btn-step2-repeat" class="btn btn-secondary btn-sm">2. Repeat Shuffled (Rev 1)</button>
+ <button id="btn-step3-override" class="btn btn-secondary btn-sm">3. Override M07 Route</button>
+ <button id="btn-step4-update" class="btn btn-secondary btn-sm">4. Import Update (Rev 2)</button>
+ <button id="btn-step5-reinitial" class="btn btn-secondary btn-sm">5. Re-import Initial (Rev 1)</button>
+ <button id="btn-step6-refresh" class="btn btn-secondary btn-sm">6. Verify Persistence</button>
+ </div>
+ </div>
+
+ <!-- File Dropzone for Custom Testing -->
+ <div class="import-zone" id="dropzone">
+ <div style="font-size:24px; margin-bottom:8px;"></div>
+ <div style="font-weight:600; font-size:13px;">Drag & Drop Additional JSON Delivery Files Here</div>
+ <div class="text-xs text-muted" style="margin-top:4px;">Or click to select a delivery JSON file from your computer</div>
+ <input type="file" id="batch-file-input" accept=".json" style="display:none;" />
+ </div>
+
+ <!-- Replay Execution Terminal Log -->
+ <div class="section-title">Replay Execution Console Log</div>
+ <div id="replay-log" class="import-log">
+ <div class="log-line log-info">System ready. Click 'Run Full Replay Automation' or execute individual steps above.</div>
+ </div>
+ </div>
+
+ <!-- ════ PAGE 5: EXPORT MANAGEMENT ════ -->
+ <div id="page-export" class="page">
+ <div class="page-header">
+ <div>
+ <h1 class="page-title">Export Package & Manifest Management</h1>
+ <div class="page-subtitle">Generate organized export directories and machine-readable manifests reflecting the current application state</div>
+ </div>
+ <div class="flex gap-2">
+ <button id="btn-export-manifest-json" class="btn btn-primary btn-sm">Download Manifest (JSON)</button>
+ <button id="btn-export-manifest-csv" class="btn btn-secondary btn-sm">Download Manifest (CSV)</button>
+ </div>
+ </div>
+
+ <div class="card card-sm" style="margin-bottom:16px;">
+ <div class="section-title" style="margin-top:0;">Organized Output Structure</div>
+ <pre class="export-manifest-preview" style="max-height:160px; font-size:11px;">
+exports/
+├── calls/
+│ ├── C01_call_summary.md ... C10_call_summary.md (10 files)
+├── meetings/
+│ ├── M01_harborpath_advisory.md ... M10_billing_workflow_walkthrough.md (8 files)
+├── daily_brief/
+│ └── daily_brief_2026-08-21.md
+├── manifest.json
+└── manifest.csv
+ </pre>
+ </div>
+
+ <div class="section-title">Live Machine-Readable Manifest Preview</div>
+ <pre id="manifest-preview" class="export-manifest-preview"></pre>
+ </div>
+
+ </main>
+</div>
+
+<!-- ── TOAST NOTIFICATIONS CONTAINER ──────────────────────────────────────── -->
+<div id="toast-area"></div>
+
+<!-- Data & App Scripts -->
+<script src="api.js"></script>
+<script src="dataset.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

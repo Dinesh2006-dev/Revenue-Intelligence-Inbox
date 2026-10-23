@@ -1,0 +1,526 @@
+import json
+import os
+
+# Define detailed analysis for each of the 18 transcript-bearing records
+# Each analysis includes:
+# - suggested_route
+# - confidence
+# - main_topic
+# - customer_sentiment / objections
+# - explicit_commitments
+# - potential_risks
+# - follow_up_requirements
+# - routing_reason
+# - evidence_references: list of { quote_or_turn, context, turn_number (for meeting) }
+
+ANALYSIS_DATA = {
+    # ── CALLS (C01 - C10) ──────────────────────────────────────────────────
+    "C01": {
+        "record_ref": "C01",
+        "source_type": "call",
+        "source_id": "2ec4404c-beee-5377-a63c-aab701da08ed",
+        "suggested_route": "no_action",
+        "confidence": "High (95%)",
+        "main_topic": "Outbound cold outreach to Harborlight Advisory regarding finance automation",
+        "customer_sentiment": "Annoyed / Resistant. Objected to unsolicited contact on private work number.",
+        "explicit_commitments": "None. Prospect explicitly declined further contact.",
+        "potential_risks": "Brand perception risk if cold outreach targets non-public personal numbers.",
+        "follow_up_requirements": "Do not contact. Add number to internal suppression / DNC list.",
+        "routing_reason": "Prospect firmly stated processes are already automated and declined interest ('I didn't ask for this call, and I'm not interested'). No commercial opportunity.",
+        "evidence_references": [
+            {
+                "quote": "This number is for my work, not for people to sell things to me.",
+                "context": "Prospect objecting to unsolicited outreach."
+            },
+            {
+                "quote": "Our processes are already very automated. We have a fairly advanced setup, so I don't think this is something we need.",
+                "context": "Clear statement of no need."
+            }
+        ]
+    },
+    "C02": {
+        "record_ref": "C02",
+        "source_type": "call",
+        "source_id": "4b870624-8aad-5315-a60e-0db95981cf99",
+        "suggested_route": "follow_up_required",
+        "confidence": "High (90%)",
+        "main_topic": "Call transfer to Fernhaven Group representative Leela",
+        "customer_sentiment": "Neutral / Gatekeeper reception",
+        "explicit_commitments": "Caller transferred to Leela's voicemail by receptionist Kavya.",
+        "potential_risks": "Unreturned voicemail; gatekeeper barrier.",
+        "follow_up_requirements": "Log voicemail delivery; follow up via email or scheduled callback in 2 business days.",
+        "routing_reason": "Target contact was out of office. Caller left voicemail; follow-up action required.",
+        "evidence_references": [
+            {
+                "quote": "It looks as though she isn't in the office today. Would you like to leave a message with me, or would you prefer her voicemail?",
+                "context": "Receptionist informing caller that Leela is absent."
+            },
+            {
+                "quote": "Certainly, I'll put you through to the mailbox now.",
+                "context": "Voicemail routing confirmed."
+            }
+        ]
+    },
+    "C03": {
+        "record_ref": "C03",
+        "source_type": "call",
+        "source_id": "20d509ba-d589-5334-9aef-ea4ce6105b1a",
+        "suggested_route": "sales_opportunity",
+        "confidence": "High (90%)",
+        "main_topic": "Developer API access & webhook event notifications follow-up with Milan",
+        "customer_sentiment": "Interested but price-sensitive and constrained by poor roaming phone reception.",
+        "explicit_commitments": "Kiran committed to send follow-up email with specific subject line. Milan agreed to review and speak Monday or Tuesday.",
+        "potential_risks": "Budget sensitivity; previous price hesitation; audio connection barrier.",
+        "follow_up_requirements": "Send email with subject 'Developer access and event notifications — follow-up', follow up by phone Monday morning.",
+        "routing_reason": "Active deal evaluation in progress. Prospect requested email proposal and committed to phone discussion on Monday/Tuesday.",
+        "evidence_references": [
+            {
+                "quote": "Send the email and we can speak Monday or Tuesday.",
+                "context": "Customer agreement on next contact window."
+            },
+            {
+                "quote": "What subject should I look for? Something like 'Developer access and event notifications — follow-up'.",
+                "context": "Specific email subject agreed for tracking."
+            }
+        ]
+    },
+    "C04": {
+        "record_ref": "C04",
+        "source_type": "call",
+        "source_id": "bcdcbf56-d338-5c78-9a97-42c2fc1c9931",
+        "suggested_route": "follow_up_required",
+        "confidence": "Medium-High (85%)",
+        "main_topic": "Voicemail follow-up for Ritesh at Lanternpath Media regarding expense software",
+        "customer_sentiment": "Unreached / Voicemail",
+        "explicit_commitments": "Arun left message confirming info was re-sent to corrected email address and asked for callback.",
+        "potential_risks": "Email delivery failure in prior attempt; unengaged recipient.",
+        "follow_up_requirements": "Track email open/reply; if no response within 48 hours, schedule second touchpoint.",
+        "routing_reason": "Voicemail left after previous email bounce/correction. Awaiting customer review.",
+        "evidence_references": [
+            {
+                "quote": "My understanding is that our information first went to the wrong email address. We subsequently used the corrected address you gave us...",
+                "context": "Arun clarifying previous communication failure."
+            },
+            {
+                "quote": "Please call me back to let me know where things stand.",
+                "context": "Call to action left on voicemail."
+            }
+        ]
+    },
+    "C05": {
+        "record_ref": "C05",
+        "source_type": "call",
+        "source_id": "75a6b94f-7717-5cfb-9e41-0acc94415e17",
+        "suggested_route": "sales_opportunity",
+        "confidence": "Medium (80%)",
+        "main_topic": "Cold introduction for multi-store retail expense & store card management",
+        "customer_sentiment": "Polite, currently using competitor StoreHarbor, but open to receiving presentation.",
+        "explicit_commitments": "Meera committed to send product deck to contact05@example.com.",
+        "potential_risks": "High switching costs; competitor (StoreHarbor) already covers core vendor execution.",
+        "follow_up_requirements": "Send product overview deck comparing SpendNest to StoreHarbor; follow up in 1 week.",
+        "routing_reason": "Prospect requested sales presentation deck ('What I suggest is that you send me your presentation... we could consider it then').",
+        "evidence_references": [
+            {
+                "quote": "There are several. One is StoreHarbor, and we use others too. What I suggest is that you send me your presentation.",
+                "context": "Customer naming incumbent vendor and requesting pitch deck."
+            },
+            {
+                "quote": "I have an email address noted down; may I confirm contact05@example.com? Yes, that is right.",
+                "context": "Verified recipient email."
+            }
+        ]
+    },
+    "C06": {
+        "record_ref": "C06",
+        "source_type": "call",
+        "source_id": "12216d5c-e254-52c6-b344-47de4c6e1ae5",
+        "suggested_route": "no_action",
+        "confidence": "High (95%)",
+        "main_topic": "Cold outreach to Nikhil regarding expense automation across 120+ retail stores",
+        "customer_sentiment": "Satisfied with existing internal ERP setup; firm polite decline.",
+        "explicit_commitments": "None. Prospect stated systems already in place and full visibility maintained by head office.",
+        "potential_risks": "Wasting rep outreach cycles on fully saturated account.",
+        "follow_up_requirements": "Mark account as disqualified / satisfied incumbent. Re-evaluate in 6 months.",
+        "routing_reason": "Explicit polite decline: 'We have quite a lot of automation... arrangements are already in place. If a particular need comes up later, we will reach out.'",
+        "evidence_references": [
+            {
+                "quote": "Head office manages it, and we have full visibility. That is why I said the arrangements are already in place.",
+                "context": "Customer explaining existing comprehensive system."
+            },
+            {
+                "quote": "If a particular need comes up later, we will reach out.",
+                "context": "Closing dismissal statement."
+            }
+        ]
+    },
+    "C07": {
+        "record_ref": "C07",
+        "source_type": "call",
+        "source_id": "428817fa-7e9e-5418-a7d4-bb396d28dfbf",
+        "suggested_route": "sales_opportunity",
+        "confidence": "High (90%)",
+        "main_topic": "Partnership inquiry with Willowbank Advisory for client virtual business accounts",
+        "customer_sentiment": "Positive / Receptive. Regularly refers overseas incorporation clients to account providers.",
+        "explicit_commitments": "Dev committed to send partnership proposal on chat app; Aditya agreed to follow-up call on Monday.",
+        "potential_risks": "Advisory firm may have existing referral arrangements with competitors (Clearport/CloudLedger).",
+        "follow_up_requirements": "Send partnership proposal on messaging app today; call Aditya on Monday to schedule formal partnership review.",
+        "routing_reason": "High-intent partnership opportunity. Prospect confirmed active client need and agreed to proposal and Monday callback.",
+        "evidence_references": [
+            {
+                "quote": "Do you currently refer clients to providers for that part of the process? Yes, that is something we normally do.",
+                "context": "Aditya confirming active client referral workflow."
+            },
+            {
+                "quote": "Once you've received them, could I call on Monday to see whether you'd like to discuss it further? Yes, that's fine.",
+                "context": "Agreed Monday follow-up call."
+            }
+        ]
+    },
+    "C08": {
+        "record_ref": "C08",
+        "source_type": "call",
+        "source_id": "129497b2-8e1d-5e01-919c-e8a852b5ff68",
+        "suggested_route": "sales_opportunity",
+        "confidence": "High (85%)",
+        "main_topic": "Cold introduction to Raghav regarding payables, advances, and multi-location expenses",
+        "customer_sentiment": "Helpful / Referred to internal stakeholder. Acknowledged team is currently evaluating solutions.",
+        "explicit_commitments": "Meera committed to email proposal to People Operations colleague at contact08@example.com.",
+        "potential_risks": "Unverified budget; contact08 colleague may not have priority bandwidth.",
+        "follow_up_requirements": "Send customized proposal to contact08@example.com referencing Raghav; follow up mid-next week.",
+        "routing_reason": "Warm referral from executive to direct department head evaluating solutions ('I think we may have been looking at a solution...').",
+        "evidence_references": [
+            {
+                "quote": "The colleague handling our people operations also deals with frontline processes and the locations. I think we may have been looking at a solution...",
+                "context": "Raghav identifying buying interest and referral."
+            },
+            {
+                "quote": "If you send him a proposal and say you spoke with me, he can take a look... It's contact08@example.com.",
+                "context": "Direct introduction instruction and email provided."
+            }
+        ]
+    },
+    "C09": {
+        "record_ref": "C09",
+        "source_type": "call",
+        "source_id": "4a1de681-f884-55e8-b1ad-de22d17cd959",
+        "suggested_route": "sales_opportunity",
+        "confidence": "Medium-High (80%)",
+        "main_topic": "Outreach to Vedant (130 store retail chain) regarding store expenses and petty cash",
+        "customer_sentiment": "Helpful gatekeeper / non-decision maker. Directed rep to Business Head.",
+        "explicit_commitments": "Meera agreed not to use Vedant's name when contacting Business Head Mr. Rishabh.",
+        "potential_risks": "Internally developed software in place; must cold outreach Mr. Rishabh without referral name.",
+        "follow_up_requirements": "Research Business Head Mr. Rishabh on LinkedIn; reach out directly without mentioning Vedant.",
+        "routing_reason": "Account qualified (130 retail locations); key decision maker identified (Business Head Mr. Rishabh).",
+        "evidence_references": [
+            {
+                "quote": "Our central team handles this. If you want to speak to somebody about it, you can find our business head, Mr Rishabh, on a professional networking site.",
+                "context": "Vedant directing rep to correct business decision maker."
+            },
+            {
+                "quote": "Would it be all right if I mentioned your name when contacting him? No, please don't use my name.",
+                "context": "Crucial boundary condition for rep outreach."
+            }
+        ]
+    },
+    "C10": {
+        "record_ref": "C10",
+        "source_type": "call",
+        "source_id": "b747f592-810e-583c-9b81-8db5ab035806",
+        "suggested_route": "follow_up_required",
+        "confidence": "Medium (75%)",
+        "main_topic": "Outreach to Aniket (former Meadowbrick employee, now at manufacturing firm)",
+        "customer_sentiment": "Curt / Guarded. Declined phone follow-up but requested messaging brief.",
+        "explicit_commitments": "Meera committed to send company brief via messaging app. Aniket declined scheduled follow-up call.",
+        "potential_risks": "High risk of disengagement; prospect insisted on initiating contact ('I said I will contact you').",
+        "follow_up_requirements": "Send high-level 1-page summary on messaging app; do NOT cold call next week.",
+        "routing_reason": "Prospect requested materials on chat but forbade unsolicited callback ('No. I said I will contact you if there is anything to discuss').",
+        "evidence_references": [
+            {
+                "quote": "why don't you just send me a brief on the messaging app? I'll look at it and come back to you.",
+                "context": "Customer request for text summary."
+            },
+            {
+                "quote": "Would a follow-up call on Monday or Tuesday next week be okay... No. I said I will contact you if there is anything to discuss.",
+                "context": "Explicit constraint on sales outreach."
+            }
+        ]
+    },
+
+    # ── MEETINGS (M01, M02, M03, M04, M06, M07, M09, M10) ───────────────────
+    "M01": {
+        "record_ref": "M01",
+        "source_type": "meeting",
+        "source_id": "cb5cecac-e68d-52b7-b10b-b0c748efc467",
+        "suggested_route": "sales_opportunity",
+        "confidence": "Very High (95%)",
+        "main_topic": "Harborpath Advisory channel partnership for remote US business bank accounts",
+        "customer_sentiment": "Very enthusiastic about commercial commission terms and referral scalability.",
+        "explicit_commitments": "Team member A to send partnership memorandum for signature, unique referral link, and shared onboarding tracking sheet.",
+        "potential_risks": "Clients must be registered US businesses with proof of US operations; non-US personal accounts not supported.",
+        "follow_up_requirements": "Draft partnership MOU with commission schedule ($260 activation, card spend tier bonus, 5th referral bonus); generate unique referral URL.",
+        "routing_reason": "High-value partnership agreement ready for onboarding and signature ('let us get the partner onboarding started').",
+        "evidence_references": [
+            {
+                "turn": 9,
+                "speaker": "Team member A",
+                "timecode": "00:06:25",
+                "text": "The activation payment is USD 260 when a referred company gets its account approved by our compliance partners. The cards option also has an interchange revenue share and a bonus based on the customer's spending during the first 60 days."
+            },
+            {
+                "turn": 12,
+                "speaker": "Partner A",
+                "timecode": "00:10:26",
+                "text": "No, let us get the partner onboarding started."
+            },
+            {
+                "turn": 21,
+                "speaker": "Team member A",
+                "timecode": "00:14:50",
+                "text": "Then let us use the unique link. They fill in the business information, then go through to arranging a demo with our team. The shared sheet would still show their onboarding status and the relevant commission."
+            }
+        ]
+    },
+    "M02": {
+        "record_ref": "M02",
+        "source_type": "meeting",
+        "source_id": "1a21c409-c050-5787-90af-2667e057e1b6",
+        "suggested_route": "vendor_supplier",
+        "confidence": "Very High (95%)",
+        "main_topic": "LedgerBridge e-invoicing compliance infrastructure evaluation for SpendNest",
+        "customer_sentiment": "Strategic vendor evaluation. SpendNest evaluating LedgerBridge as upstream infrastructure provider.",
+        "explicit_commitments": "Supplier A to send volume & country sizing template; SpendNest team to fill received/issued invoice estimates.",
+        "potential_risks": "Setup cost EUR 2,600 to 6,500; Q4 timeline competing with internal roadmap priorities; regional localization complexity.",
+        "follow_up_requirements": "Complete volume sizing template with AP usage data; schedule proposal walkthrough with product & finance leadership.",
+        "routing_reason": "Vendor evaluation meeting where SpendNest is the buyer evaluating e-invoicing API infrastructure. Must NOT be routed to Sales Opportunity.",
+        "evidence_references": [
+            {
+                "turn": 2,
+                "speaker": "Supplier A",
+                "timecode": "00:06:34",
+                "text": "Then I will cover the market strategy as well as the technical integration. Are you more interested in generating invoice PDFs or in electronic invoicing through the relevant networks?"
+            },
+            {
+                "turn": 17,
+                "speaker": "Supplier A",
+                "timecode": "00:22:07",
+                "text": "I will send a volume template: countries, small versus larger customers, invoices issued and invoices received. That will let us calculate a proposal and the likely cost per customer."
+            },
+            {
+                "turn": 31,
+                "speaker": "Supplier A",
+                "timecode": "00:45:53",
+                "text": "The basic setup begins at EUR 2,600; a more supported implementation starts at EUR 6,500, and larger projects are scoped separately."
+            }
+        ]
+    },
+    "M03": {
+        "record_ref": "M03",
+        "source_type": "meeting",
+        "source_id": "398672e7-62dd-5afd-846d-0237d49792fb",
+        "suggested_route": "sales_opportunity",
+        "confidence": "High (90%)",
+        "main_topic": "Asterloom Systems corporate cards, approval workflows, and accounting sync demo",
+        "customer_sentiment": "Analytical and price-sensitive. Evaluating 65-employee rollout; seeking CFO approval.",
+        "explicit_commitments": "Team member A to send formal commercial proposal separating INR 26,000 subscription from INR 13,000 setup charge.",
+        "potential_risks": "Prepaid vs credit confusion (Customer expected credit facility); pricing sensitivity over setup fee; CFO approval barrier.",
+        "follow_up_requirements": "Deliver transparent itemized proposal (INR 26k annual + INR 13k setup); offer CFO executive briefing deck.",
+        "routing_reason": "High-priority sales prospect (65 employees, INR 10-13L monthly card spend). Requires written proposal before CFO presentation.",
+        "evidence_references": [
+            {
+                "turn": 6,
+                "speaker": "Customer A",
+                "timecode": "00:11:04",
+                "text": "Wait, these are prepaid? I had thought about a corporate credit card. So we put money in before anyone spends, and there is no credit facility on these domestic cards?"
+            },
+            {
+                "turn": 24,
+                "speaker": "Team member A",
+                "timecode": "00:30:43",
+                "text": "INR 26,000 plus tax is the recurring annual subscription, and INR 13,000 is the one-time accounting integration setup."
+            },
+            {
+                "turn": 36,
+                "speaker": "Customer B",
+                "timecode": "00:48:43",
+                "text": "Send the details first. We need time with the CFO and will tell you if another call is needed. Let us make that decision internally before scheduling more."
+            }
+        ]
+    },
+    "M04": {
+        "record_ref": "M04",
+        "source_type": "meeting",
+        "source_id": "b0f79b3d-37ba-52f9-b2bc-58b159dd6d91",
+        "suggested_route": "customer_concern",
+        "confidence": "High (90%)",
+        "main_topic": "Cedarwave Distribution card migration, physical card acceptance, and credit integration",
+        "customer_sentiment": "Frustrated with current prepaid card acceptance; demanding credit card integration for INR 1.3 crore bank credit line.",
+        "explicit_commitments": "Team member A to investigate eligibility of customer's existing bank credit cards for SpendNest statement transaction feed.",
+        "potential_risks": "Customer churn risk if migration does not support credit facility; user re-KYC friction; department hierarchy confusion.",
+        "follow_up_requirements": "Check bank card-feed technical feasibility; schedule dedicated admin support session to reorganize confused user department structure.",
+        "routing_reason": "Customer retention and migration concern. Existing customer experiencing card acceptance failures and demanding bank credit integration.",
+        "evidence_references": [
+            {
+                "turn": 2,
+                "speaker": "Team member A",
+                "timecode": "00:01:30",
+                "text": "Much of your usage is physical-card spending. We have seen acceptance problems with the existing programme and are proposing a move to a different provider and card network."
+            },
+            {
+                "turn": 11,
+                "speaker": "Customer A",
+                "timecode": "00:07:17",
+                "text": "Okay, I have confirmed it: moving from prepaid to credit is the main issue for us. At some stage we will have to consider another option for that."
+            },
+            {
+                "turn": 22,
+                "speaker": "Customer B",
+                "timecode": "00:24:32",
+                "text": "We already have a corporate credit line of about INR 1.3 crore. Cards are issued to only a few people so far. We were waiting for the bank administration portal before attempting the accounting integration."
+            }
+        ]
+    },
+    "M06": {
+        "record_ref": "M06",
+        "source_type": "meeting",
+        "source_id": "657b9e9d-9472-5b01-a127-a648ad7e8cf7",
+        "suggested_route": "sales_opportunity",
+        "confidence": "Medium-High (85%)",
+        "main_topic": "Mapletrail Services branch finance workflow, receivables automation, and collections",
+        "customer_sentiment": "Receptive to automation for collections and exceptions; cautious about payment security and central office control.",
+        "explicit_commitments": "Team member A to share technical collateral on receivables automation, payables approval, and security certifications.",
+        "potential_risks": "Centralized corporate finance team (65 people) controls ERP; branch finance has limited unilateral purchasing authority.",
+        "follow_up_requirements": "Send security whitepaper and AR collections workflow deck; propose discovery call with central finance team.",
+        "routing_reason": "High-volume prospect (260-390 invoices/month, 65-78 clients). Receptive to AR exception automation.",
+        "evidence_references": [
+            {
+                "turn": 12,
+                "speaker": "Customer A",
+                "timecode": "00:13:57",
+                "text": "Around 65–78 customers. There may be several projects for each. Initially I would estimate 260–390 invoices a month, with a large total value."
+            },
+            {
+                "turn": 23,
+                "speaker": "Customer A",
+                "timecode": "00:22:48",
+                "text": "So the repetitive work goes to the system, with the final judgment still coming back to finance?"
+            },
+            {
+                "turn": 31,
+                "speaker": "Customer A",
+                "timecode": "00:34:27",
+                "text": "Confidentiality is important. Payment information is sensitive. How is that protected, and is there a risk of somebody interfering with it?"
+            }
+        ]
+    },
+    "M07": {
+        "record_ref": "M07",
+        "source_type": "meeting",
+        "source_id": "4f304fff-fd40-5cfc-a366-0a134c445c2a",
+        "suggested_route": "customer_escalation",
+        "confidence": "Critical / Very High (98%)",
+        "main_topic": "Willowfield Trust live screen-share bug reproduction: 4 major application defects",
+        "customer_sentiment": "Highly concerned and patient while demonstrating 4 distinct product defects on live screen share.",
+        "explicit_commitments": "Team member A committed to raise screenshots and bug reports with engineering and update customer within 1-2 hours on stuck payments.",
+        "potential_risks": "Major UX flaws affecting payment workflows, data integrity, and duplicate work; severe churn risk if unresolved.",
+        "follow_up_requirements": "CRITICAL: Log 4 engineering tickets; deliver status update to Customer A within 2 hours regarding stuck payments.",
+        "routing_reason": "Severe multi-issue bug escalation. Customer demonstrated 4 reproducible product defects on live call.",
+        "evidence_references": [
+            {
+                "turn": 3,
+                "speaker": "Team member A",
+                "timecode": "00:11:16",
+                "text": "The field still shows the earlier wording. So the change is not appearing after you save, is that right? (Bug 1: Description edit fails to save)."
+            },
+            {
+                "turn": 8,
+                "speaker": "Customer A",
+                "timecode": "00:12:25",
+                "text": "When I go through this route [Recreate payment], I cannot upload a document. (Bug 2: Document upload broken on Recreate Payment screen)."
+            },
+            {
+                "turn": 19,
+                "speaker": "Team member A",
+                "timecode": "00:15:37",
+                "text": "The payments appear to have been released but are stuck showing Processing. I have asked the team to look at these. I expect an update or resolution in an hour or two... (Bug 3: Reimbursements stuck in Processing)."
+            },
+            {
+                "turn": 21,
+                "speaker": "Customer A",
+                "timecode": "00:16:27",
+                "text": "When I use Mark as paid, the first payment shows INR 18,200. I enter the amount I need and save... The amount from the previous item appears in the next one. (Bug 4: Stale state retention on Mark as Paid modal)."
+            }
+        ]
+    },
+    "M09": {
+        "record_ref": "M09",
+        "source_type": "meeting",
+        "source_id": "4b5b9192-f3fc-505a-8e77-4d2ffaa54594",
+        "suggested_route": "customer_concern",
+        "confidence": "High (90%)",
+        "main_topic": "Multi-tenant account setup for Brookmint Holdings & Northkite Equipment; expired invite token",
+        "customer_sentiment": "Patient but frustrated by expired invitation tokens and unclear multi-entity administrator permissions.",
+        "explicit_commitments": "Team member A to investigate fresh reset token expiration bug with engineering and reply by Monday at latest.",
+        "potential_risks": "Customer cannot onboard core employee base (Brookmint Holdings); permission leak via shared accounts mailbox.",
+        "follow_up_requirements": "Fix invitation token expiration defect in auth service; provide written governance guide on shared admin mailboxes vs distinct user logins.",
+        "routing_reason": "Technical onboarding blocker and account governance concern. Customer unable to access new entity due to immediate token expiration.",
+        "evidence_references": [
+            {
+                "turn": 1,
+                "speaker": "Customer A",
+                "timecode": "00:01:53",
+                "text": "The invitation for Brookmint Holdings did not work when I tried it. It may have expired, or perhaps we can try again together."
+            },
+            {
+                "turn": 21,
+                "speaker": "Customer A",
+                "timecode": "00:13:54",
+                "text": "It says the token has expired. This is the fresh message we just received."
+            },
+            {
+                "turn": 22,
+                "speaker": "Team member A",
+                "timecode": "00:13:57",
+                "text": "I need to check that with the team. I hope to update you today, or by Monday at the latest. We have not got the Brookmint Holdings login working yet."
+            }
+        ]
+    },
+    "M10": {
+        "record_ref": "M10",
+        "source_type": "meeting",
+        "source_id": "337f297d-9385-5b82-9e54-5019c1ed912c",
+        "suggested_route": "internal",
+        "confidence": "Very High (98%)",
+        "main_topic": "Internal operations training: billing engine, deduction retry schedule, and account suspension",
+        "customer_sentiment": "Internal training session between SpendNest staff (Trainer & Trainees).",
+        "explicit_commitments": "Team member A to request back-office super-admin access for Team member B ahead of next training session.",
+        "potential_risks": "Manual billing operations error if staff unfreeze account without recalculating next billing date.",
+        "follow_up_requirements": "Provision back-office sandbox access for ops trainee; share operational standard operating procedure (SOP) documentation.",
+        "routing_reason": "Internal operational training meeting between SpendNest team members. No external client present.",
+        "evidence_references": [
+            {
+                "turn": 4,
+                "speaker": "Team member B",
+                "timecode": "00:05:16",
+                "text": "I have access to a demo account as an administrator, but I do not have the back-office super-admin access you mentioned."
+            },
+            {
+                "turn": 5,
+                "speaker": "Team member A",
+                "timecode": "00:05:44",
+                "text": "That is a different application. Operations uses it to create accounts, control enabled features and manage billing. I will show what it looks like, rather than ask you to create an invoice yourself."
+            },
+            {
+                "turn": 18,
+                "speaker": "Team member A",
+                "timecode": "00:20:24",
+                "text": "The customer must tell us, then operations clears the outstanding invoice and unfreezes the account. Operations also needs to adjust the next billing date manually. Clearing the payment without checking that date can leave the next cycle wrong."
+            }
+        ]
+    }
+}
+
+# Write out as JSON file for both frontend and backend scripts
+with open('candidate/app/data/analysis_data.json', 'w', encoding='utf-8') as f:
+    json.dump(ANALYSIS_DATA, f, indent=2)
+
+print(f"Successfully generated analysis_data.json with {len(ANALYSIS_DATA)} records.")

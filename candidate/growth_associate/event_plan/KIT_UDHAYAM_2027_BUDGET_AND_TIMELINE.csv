@@ -1,0 +1,26 @@
+Category,Subcategory,Item_Description,Quantity,Unit_Cost_INR,Total_Cost_INR,Funding_Source,Approval_Status
+Prizes,Technical Events,Cash Prizes for 14 Department Technical Events,14,6000,84000,Management Grant,Proposed Estimate
+Prizes,Cultural Events,Cash Prizes for Flagship Dance & Music Contests,6,7000,42000,Management Grant,Proposed Estimate
+Prizes,Hackathon,Winner & Runner Cash Award for 24-Hr Hackathon,2,12000,24000,Corporate Title Sponsor,Proposed Estimate
+Prizes,Mementos,Trophies and Shields for Winners,120,250,30000,Registration Fees,Proposed Estimate
+Prizes,Certificates,High-Grade Pre-Printed Certificates,3000,5,15000,Registration Fees,Proposed Estimate
+Production,Audio System,Line-Array Professional Sound System (2 Days),1,70000,70000,Associate Sponsor,Vendor Quoted
+Production,Visual Display,P3 High-Definition LED Backdrop Screen,1,50000,50000,Associate Sponsor,Vendor Quoted
+Production,Lighting,Intelligent Stage Moving Heads & Par Cans,1,40000,40000,Associate Sponsor,Vendor Quoted
+Production,Electrical,125 kVA Silent Generator with Fuel (2 Days),1,20000,20000,College Maintenance,Confirmed Internal
+Hospitality,Guest Honorarium,Honorarium for Keynote Industry Speakers,4,5000,20000,Management Grant,Proposed Estimate
+Hospitality,Guest Logistics,Travel and Hotel Accommodation for VIP Guests,4,5000,20000,Management Grant,Proposed Estimate
+Hospitality,Judges Meals,Executive Lunch for 35 External Judges (2 Days),70,400,28000,Registration Fees,Proposed Estimate
+Hospitality,Volunteer Meals,Refreshments and Meal Boxes for Student Volunteers,300,150,45000,Registration Fees,Proposed Estimate
+Branding,Print Materials,Campus Flex Banners and Entrance Arch,20,1000,20000,College Branding Fund,Vendor Quoted
+Branding,Outreach,Brochures & Printed Invitations Couriered to 85 Colleges,85,150,12750,Registration Fees,Proposed Estimate
+Branding,Digital Marketing,Targeted Social Media Ads & Domain Hosting,1,12250,12250,Digital Media Budget,Proposed Estimate
+Logistics,Registration,Lanyards and Printed Badges for External Delegates,1200,10,12000,Registration Fees,Proposed Estimate
+Logistics,Safety,Emergency Ambulance Standby & First-Aid Supplies,1,20000,20000,College Health Centre,Confirmed Internal
+Logistics,Security,Barricades and Crowd Control Bands,2000,5,10000,Campus Security,Confirmed Internal
+Contingency,Unforeseen,Contingency Reserve for Last-Minute Requirements,1,45000,45000,Management Reserve,Approved Policy
+TOTAL_EXPENDITURE,,,,,,620000,Balanced Budget
+REVENUE,Seed Grant,College Management Baseline Allocation,1,250000,250000,Institutional Sanction,Sanctioned Benchmark
+REVENUE,Registrations,External Delegate Passes (Target 800 passes @ 300 INR),800,300,240000,Delegate Ticket Sales,Projected Revenue
+REVENUE,Sponsorship,Title and Associate Corporate Sponsorships,3,50000,150000,Corporate Partners,Pipeline Projection
+TOTAL_PROJECTED_REVENUE,,,,,,640000,Net Surplus: INR 20000
