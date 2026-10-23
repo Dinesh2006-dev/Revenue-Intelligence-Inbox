@@ -1,5 +1,5 @@
 """
-app.py  —  Flask REST API for SpendNest Revenue Intelligence Inbox
+app.py  —  Flask REST API for Revenue Intelligence Inbox
 Endpoints:
   GET  /api/health                      → server status
   GET  /api/records                     → filtered list of records

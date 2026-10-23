@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: spendnest-revenue-inbox
+    name: revenue-intelligence-inbox
     env: python
     buildCommand: "pip install -r backend/requirements.txt && cd backend && python ingest_supabase.py"
     startCommand: "cd backend && gunicorn wsgi:app --bind 0.0.0.0:$PORT --workers 2"

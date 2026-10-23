@@ -1,7 +1,7 @@
 @echo off
 setlocal
 echo ============================================
-echo   SpendNest Revenue Intelligence Inbox
+echo   Revenue Intelligence Inbox
 echo   Flask + Supabase Cloud Server
 echo ============================================
 echo.

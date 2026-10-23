@@ -1,4 +1,4 @@
-# Run the SpendNest Flask server with the Python environment that contains Flask
+# Run the Revenue Intelligence Flask server with the Python environment that contains Flask
 $pythonExe = "$env:LOCALAPPDATA\Microsoft\WindowsApps\python.exe"
 
 if (-not (Test-Path $pythonExe)) {
@@ -6,7 +6,7 @@ if (-not (Test-Path $pythonExe)) {
 }
 
 Write-Host "============================================" -ForegroundColor Cyan
-Write-Host "  SpendNest Revenue Intelligence Inbox" -ForegroundColor Cyan
+Write-Host "  Revenue Intelligence Inbox" -ForegroundColor Cyan
 Write-Host "  Starting Flask + Supabase Server..." -ForegroundColor Cyan
 Write-Host "  Using Python: $pythonExe" -ForegroundColor Gray
 Write-Host "============================================" -ForegroundColor Cyan

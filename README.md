@@ -1,4 +1,4 @@
-# SpendNest Revenue Intelligence Inbox
+# Revenue Intelligence Inbox
 
 A modern full-stack revenue intelligence application for sales and finance leadership. Ingests raw multi-channel call and meeting records, applies automated routing, supports human-in-the-loop overrides, and persists data live to **Supabase (PostgreSQL)**.
 
